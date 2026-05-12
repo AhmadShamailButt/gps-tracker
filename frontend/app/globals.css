@@ -1,0 +1,181 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import "leaflet-draw/dist/leaflet.draw.css";
+
+@theme {
+  --font-sans: var(--font-sans-loaded), "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-display-loaded), "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --color-background: oklch(99% 0.005 250);
+  --color-foreground: oklch(20% 0.02 250);
+  --color-card: oklch(100% 0 0);
+  --color-card-foreground: oklch(20% 0.02 250);
+  --color-muted: oklch(96% 0.008 250);
+  --color-muted-foreground: oklch(50% 0.015 250);
+  --color-border: oklch(90% 0.01 250);
+  --color-accent: oklch(95% 0.012 250);
+  --color-accent-foreground: oklch(25% 0.02 250);
+  --color-primary: oklch(58% 0.18 270);
+  --color-primary-foreground: oklch(99% 0 0);
+
+  --color-pastel-pink: oklch(94% 0.04 350);
+  --color-pastel-indigo: oklch(94% 0.045 270);
+  --color-pastel-green: oklch(94% 0.04 150);
+  --color-pastel-amber: oklch(94% 0.045 80);
+  --color-pastel-sky: oklch(94% 0.04 220);
+  --color-pastel-rose: oklch(94% 0.045 20);
+
+  --color-on-pink: oklch(35% 0.13 350);
+  --color-on-indigo: oklch(35% 0.12 270);
+  --color-on-green: oklch(35% 0.1 150);
+  --color-on-amber: oklch(35% 0.13 70);
+  --color-on-sky: oklch(35% 0.1 220);
+  --color-on-rose: oklch(35% 0.15 25);
+
+  --color-success: oklch(60% 0.13 150);
+  --color-warning: oklch(70% 0.14 80);
+  --color-danger: oklch(58% 0.2 25);
+  --color-info: oklch(60% 0.14 220);
+
+  /* Map-specific (Leaflet needs hex/rgb so we derive from these) */
+  --map-tile-bg: oklch(98% 0.005 250);
+  --map-marker: oklch(58% 0.18 270);
+  --map-trail: oklch(58% 0.18 270);
+  --map-zone-restricted: oklch(58% 0.2 25);
+  --map-zone-allowed: oklch(60% 0.13 150);
+  --map-breach: oklch(58% 0.2 25);
+  --map-anomaly-high: oklch(58% 0.2 25);
+  --map-anomaly-medium: oklch(70% 0.14 80);
+  --map-anomaly-low: oklch(60% 0.14 220);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+.dark {
+  --color-background: oklch(16% 0.015 250);
+  --color-foreground: oklch(96% 0.005 250);
+  --color-card: oklch(20% 0.018 250);
+  --color-card-foreground: oklch(96% 0.005 250);
+  --color-muted: oklch(24% 0.018 250);
+  --color-muted-foreground: oklch(68% 0.012 250);
+  --color-border: oklch(28% 0.018 250);
+  --color-accent: oklch(26% 0.02 250);
+  --color-accent-foreground: oklch(95% 0.005 250);
+  --color-primary: oklch(70% 0.16 270);
+  --color-primary-foreground: oklch(15% 0.02 270);
+
+  --color-pastel-pink: oklch(34% 0.06 350);
+  --color-pastel-indigo: oklch(34% 0.07 270);
+  --color-pastel-green: oklch(34% 0.06 150);
+  --color-pastel-amber: oklch(34% 0.07 80);
+  --color-pastel-sky: oklch(34% 0.06 220);
+  --color-pastel-rose: oklch(34% 0.07 25);
+
+  --color-on-pink: oklch(88% 0.06 350);
+  --color-on-indigo: oklch(88% 0.07 270);
+  --color-on-green: oklch(88% 0.06 150);
+  --color-on-amber: oklch(88% 0.07 80);
+  --color-on-sky: oklch(88% 0.06 220);
+  --color-on-rose: oklch(88% 0.07 25);
+
+  --color-success: oklch(70% 0.13 150);
+  --color-warning: oklch(78% 0.14 80);
+  --color-danger: oklch(68% 0.18 25);
+  --color-info: oklch(70% 0.14 220);
+
+  --map-tile-bg: oklch(20% 0.018 250);
+  --map-marker: oklch(70% 0.16 270);
+  --map-trail: oklch(70% 0.16 270);
+  --map-zone-restricted: oklch(68% 0.18 25);
+  --map-zone-allowed: oklch(70% 0.13 150);
+  --map-breach: oklch(68% 0.18 25);
+  --map-anomaly-high: oklch(68% 0.18 25);
+  --map-anomaly-medium: oklch(78% 0.14 80);
+  --map-anomaly-low: oklch(70% 0.14 220);
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; padding: 0; }
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11";
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Leaflet controls below floating panels (panels live at z-[400]) */
+.leaflet-top,
+.leaflet-bottom { z-index: 100; }
+
+/* Hide the default leaflet draw toolbar — we render our own button via React */
+.leaflet-draw {
+  display: none !important;
+}
+/* Style the in-progress drawing tooltip + action buttons (Finish/Cancel) */
+.leaflet-draw-tooltip {
+  background: var(--color-card) !important;
+  color: var(--color-foreground) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 0.5rem !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+  padding: 6px 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+.leaflet-draw-tooltip::before {
+  border-right-color: var(--color-card) !important;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--color-card) !important;
+  color: var(--color-foreground) !important;
+  border-radius: 0.5rem;
+}
+
+/* Zone hover tooltip — themed to match floating panels */
+.leaflet-tooltip.gps-zone-tooltip {
+  background: var(--color-card) !important;
+  color: var(--color-foreground) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 0.625rem !important;
+  padding: 10px 12px !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  white-space: normal !important;
+  pointer-events: none;
+}
+.leaflet-tooltip.gps-zone-tooltip::before {
+  border-top-color: var(--color-card) !important;
+}
+.leaflet-control-attribution {
+  background: var(--color-card) !important;
+  color: var(--color-muted-foreground) !important;
+  font-size: 10px !important;
+  margin-right: 64px !important;
+}
+
+.leaflet-popup.gps-anomaly-popup {
+  pointer-events: none !important;
+}
+.leaflet-popup.gps-anomaly-popup .leaflet-popup-content-wrapper,
+.leaflet-popup.gps-anomaly-popup .leaflet-popup-tip {
+  pointer-events: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

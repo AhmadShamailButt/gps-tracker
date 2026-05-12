@@ -1,0 +1,10 @@
+{
+  "name": "gps-tracker-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Azure Functions for GPS tracker: zone CRUD + IoT Hub -> Mosquitto republisher",
+  "dependencies": {
+    "@azure/cosmos": "^4.2.0",
+    "mqtt": "^5.10.0"
+  }
+}
