@@ -1,8 +1,5 @@
 # GPS Tracker — IoT geofencing + AI anomaly detection
 
-FAST NUCES IoT project · Spring 2026
-**Team:** Ezza Abdullah · Ahmad Shamail Butt · Tehreem Tahir
-
 ```
 gps-tracker/
 ├─ frontend/        Next.js dashboard (live map, geofences, AI Insights panel)
